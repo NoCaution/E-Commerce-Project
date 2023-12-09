@@ -11,12 +11,35 @@ spring:
       #        - name: ThrottlingFilter
       discovery:
         locator:
-          enabled: true
           lower-case-service-id: true
-
+          enabled: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+        - id: basket-service
+          uri: lb://basket-service
+          predicates:
+            - Path=/api/basket/**
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/product/**
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+            -
 eureka:
   client:
     instance-info-replication-interval-seconds: 5
     registry-fetch-interval-seconds: 5
     serviceUrl:
-      defaultZone: http://localhost:9001/eureka/
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
