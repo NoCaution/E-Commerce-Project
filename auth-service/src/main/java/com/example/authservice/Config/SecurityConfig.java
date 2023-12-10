@@ -1,6 +1,7 @@
-package com.example.commonservice.Config;
+package com.example.authservice.Config;
 
-import com.example.commonservice.Security.JWTAuthenticationFilter;
+import com.example.authservice.Security.JWTAuthenticationFilter;
+import com.example.commonservice.Service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Autowired
     private JWTAuthenticationFilter authFilter;
+
+    @Autowired
+    private CommonService commonService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authProvider() {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        //daoProvider.setUserDetailsService();
+        daoProvider.setUserDetailsService(commonService);
         daoProvider.setPasswordEncoder(passwordEncoder());
         return daoProvider;
     }
