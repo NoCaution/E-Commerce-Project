@@ -34,7 +34,6 @@ spring:
           uri: lb://order-service
           predicates:
             - Path=/api/order/**
-            -
 eureka:
   client:
     instance-info-replication-interval-seconds: 5

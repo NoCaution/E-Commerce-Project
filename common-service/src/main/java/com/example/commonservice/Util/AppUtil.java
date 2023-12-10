@@ -1,20 +1,28 @@
 package com.example.commonservice.Util;
 
+import com.example.commonservice.Entity.APIResponse;
 import com.google.gson.Gson;
 import org.apache.http.client.fluent.Request;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 public class AppUtil {
-    private final Gson gson = new Gson();
+
+    @Autowired
+    private Gson gson;
+    @Autowired
+    private CustomMapper customMapper;
 
     public <T> T sendRequest(String uri , Class<T> targetClass){
         try {
             String json = Request.Get(uri).execute().returnContent().asString();
-            return gson.fromJson(json, targetClass);
+            APIResponse apiResponse =  gson.fromJson(json, APIResponse.class);
+            return customMapper.map(apiResponse.getResult(),targetClass);
         } catch (IOException e) {
+            System.out.println(e.toString());
             return null;
         }
     }

@@ -21,7 +21,9 @@ eureka:
     instance-info-replication-interval-seconds: 5
     registry-fetch-interval-seconds: 5
     serviceUrl:
-      defaultZone: http://localhost:9001/eureka/
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
 
 server:
   port: 0
