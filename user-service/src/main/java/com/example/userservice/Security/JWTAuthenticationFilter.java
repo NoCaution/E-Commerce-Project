@@ -1,7 +1,7 @@
-package com.example.authservice.Security;
+package com.example.userservice.Security;
 
-import com.example.commonservice.Service.CommonService;
 import com.example.commonservice.Util.JWTUtil;
+import com.example.userservice.Service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JWTUtil jwtUtil;
 
     @Autowired
-    private CommonService commonService;
+    private UserService userService;
+
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -32,16 +33,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String id;
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request,response);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
             return;
         }
         token = authHeader.substring(7).trim();
         id = jwtUtil.extractUserId(token);
 
-        if(id != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            User user = commonService.loadUserByUsername(id);
-            if(jwtUtil.isTokenValid(token,user)){
+        if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userService.loadUserByUsername(id);
+            if (jwtUtil.isTokenValid(token, user)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         user,
                         null,
@@ -53,7 +54,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
-
