@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
     @Autowired
     private AuthService authService;
+
 
     @PostMapping("/register")
     public APIResponse register(@RequestBody RegistirationRequestDto request) {

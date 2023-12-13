@@ -1,29 +1,26 @@
 package com.example.authservice.Service;
 
-import com.example.authservice.Entity.Dto.*;
+
+import com.example.authservice.Entity.Dto.AuthenticationRequestDto;
+import com.example.authservice.Entity.Dto.AuthenticationResponseDto;
+import com.example.authservice.Entity.Dto.RegistirationRequestDto;
 import com.example.authservice.Entity.User;
 import com.example.authservice.Repository.AuthRepository;
-import com.example.commonservice.Util.AppUtil;
+import com.example.commonservice.Entity.Dto.UserDetailsDto;
 import com.example.commonservice.Util.CustomMapper;
 import com.example.commonservice.Util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.Set;
 
 @Service
 public class AuthService{
-    private final String USER_SERVICE_URL = "http://localhost:9000/api/user/";
-
     @Autowired
     private CustomMapper customMapper;
-
-    @Autowired
-    private AppUtil appUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -34,17 +31,14 @@ public class AuthService{
     @Autowired
     private JWTUtil jwtUtil;
 
-    @Autowired
-    private AuthenticationManager authManager;
 
-
-    private boolean isUniqeUser(String email){
-            UserDto userDto = appUtil.sendRequest(USER_SERVICE_URL + "getUserByEmail/" + email, UserDto.class);
-            return userDto == null;
+    private boolean isUniqeUser(String email) {
+        User user = getUserByEmail(email);
+        return user == null;
     }
 
-    public AuthenticationResponseDto register(RegistirationRequestDto requestDto){
-        if(!isUniqeUser(requestDto.getEmail())){
+    public AuthenticationResponseDto register(RegistirationRequestDto requestDto) {
+        if (!isUniqeUser(requestDto.getEmail())) {
             return new AuthenticationResponseDto(
                     true
             );
@@ -52,17 +46,16 @@ public class AuthService{
 
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
 
-        User user = customMapper.map(requestDto,User.class);
+        User user = customMapper.map(requestDto, User.class);
         user.setCreatedAt(new Date());
         authRepository.save(user);
 
-        // this method gets the user-service url and returns the desired object;
-        UserDetailsDto commonUserDto = appUtil.sendRequest(USER_SERVICE_URL + "getUserByEmail/" + requestDto.getEmail(), UserDetailsDto.class);
+        UserDetailsDto userDetailsDto = customMapper.map(getUserByEmail(requestDto.getEmail()), UserDetailsDto.class);
 
         org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
-                commonUserDto.getId().toString(),
-                commonUserDto.getPassword(),
-                Set.of(new SimpleGrantedAuthority(commonUserDto.getRole().toString()))
+                userDetailsDto.getId().toString(),
+                userDetailsDto.getPassword(),
+                Set.of(new SimpleGrantedAuthority(userDetailsDto.getRole().toString()))
         );
 
         String token = jwtUtil.generateJwtToken(userDetails);
@@ -72,24 +65,18 @@ public class AuthService{
         );
     }
 
-    public AuthenticationResponseDto login(AuthenticationRequestDto requestDto){
-        if(isUniqeUser(requestDto.getEmail())){
+    public AuthenticationResponseDto login(AuthenticationRequestDto requestDto) {
+        if (isUniqeUser(requestDto.getEmail())) {
             return new AuthenticationResponseDto(
                     false
             );
         }
 
-        User user = appUtil.sendRequest(USER_SERVICE_URL + "getUserByEmail/" + requestDto.getEmail(), User.class);
-        if(!passwordEncoder.matches(requestDto.getPassword(),user.getPassword())){
+        User user = getUserByEmail(requestDto.getEmail());
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             // user esixts but token will be null
             return new AuthenticationResponseDto();
         }
-        authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getId(),
-                        requestDto.getPassword()
-                )
-        );
 
         org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
                 user.getId().toString(),
@@ -101,6 +88,10 @@ public class AuthService{
         return new AuthenticationResponseDto(
                 token
         );
+    }
+
+    private User getUserByEmail(String email) {
+        return authRepository.findUserByEmail(email);
     }
 
 
