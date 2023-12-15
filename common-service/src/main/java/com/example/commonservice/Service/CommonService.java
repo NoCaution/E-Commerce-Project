@@ -31,7 +31,7 @@ public class CommonService implements UserDetailsService {
 
     @Override
     public org.springframework.security.core.userdetails.User loadUserByUsername(String token) throws UsernameNotFoundException {
-        UserDetailsDto userDetailsDto = appUtil.sendRequest(USER_SERVICE_URL + "getLoggedInUser/", token, UserDetailsDto.class);
+        UserDetailsDto userDetailsDto = appUtil.sendRequest(USER_SERVICE_URL + "getLoggedInUser", token, UserDetailsDto.class);
 
         return new org.springframework.security.core.userdetails.User(
                 userDetailsDto.getId().toString(),
