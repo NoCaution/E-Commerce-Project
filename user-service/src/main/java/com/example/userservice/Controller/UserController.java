@@ -1,6 +1,7 @@
 package com.example.userservice.Controller;
 
 import com.example.commonservice.Entity.APIResponse;
+import com.example.commonservice.Entity.Dto.UserDetailsDto;
 import com.example.commonservice.Entity.Dto.UserDto;
 import com.example.commonservice.Service.CommonService;
 import com.example.commonservice.Util.CustomMapper;
@@ -40,11 +41,11 @@ public class UserController {
 
         User user = userService.getUserById(UUID.fromString(authenticatedUserId));
 
-        UserDto userDto = customMapper.map(user, UserDto.class);
+        UserDetailsDto userDetailsDto = customMapper.map(user, UserDetailsDto.class);
         return new APIResponse(
                 HttpStatus.OK,
                 "success",
-                userDto
+                userDetailsDto
         );
     }
 
