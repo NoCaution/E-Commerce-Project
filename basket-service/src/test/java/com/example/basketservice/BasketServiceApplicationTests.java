@@ -1,4 +1,4 @@
-package com.example.basket.service;
+package com.example.basketservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
