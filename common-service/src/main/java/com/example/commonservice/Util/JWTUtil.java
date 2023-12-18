@@ -16,8 +16,8 @@ import java.util.function.Function;
 @Component
 public class JWTUtil {
 
-    private static final String SECRET_KEY = "8f3ca84c5122366a19f7804e71c432fc639c7817903321a43879fe8c436c2311";
-    private static final int expirationTimeMillis = 100000 * 60 * 24;
+    private final String SECRET_KEY = "8f3ca84c5122366a19f7804e71c432fc639c7817903321a43879fe8c436c2311";
+    private static final long expirationTimeMillisConst = 100000 * 60 * 24;
 
     public String extractUserId(String token){
         return extractClaim(token, Claims ::getSubject);
@@ -36,7 +36,7 @@ public class JWTUtil {
                 .setHeaderParam("type","JWT")
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMillis))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMillisConst))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

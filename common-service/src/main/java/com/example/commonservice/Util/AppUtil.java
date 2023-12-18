@@ -16,11 +16,14 @@ public class AppUtil {
     @Autowired
     private CustomMapper customMapper;
 
-    public <T> T sendRequest(String uri, String token, Class<T> targetClass) {
+    public <T> T sendRequest(Request request, String token, Class<T> targetClass) {
         try {
             String header = "Bearer " + token;
-            String json = Request.Get(uri).setHeader("Authorization", header).execute().returnContent().asString();
+            String json = request.setHeader("Authorization", header).execute().returnContent().asString();
             APIResponse apiResponse = gson.fromJson(json, APIResponse.class);
+            if(apiResponse.getResult() == null){
+                return customMapper.map(apiResponse,targetClass);
+            }
             return customMapper.map(apiResponse.getResult(), targetClass);
         } catch (IOException e) {
             return null;
