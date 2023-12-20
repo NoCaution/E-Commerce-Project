@@ -5,6 +5,8 @@ import com.example.authservice.Entity.Dto.AuthenticationResponseDto;
 import com.example.authservice.Entity.Dto.RegistirationRequestDto;
 import com.example.authservice.Service.AuthService;
 import com.example.commonservice.Entity.APIResponse;
+import com.example.commonservice.Util.AppUtil;
+import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +21,13 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private AppUtil appUtil;
+
 
     @PostMapping("/register")
     public APIResponse register(@RequestBody RegistirationRequestDto request) {
+        String BASKET_SERVICE_URL = "http://localhost:9000/api/basket/";
         AuthenticationResponseDto response = authService.register(request);
         if (response.isUserExists()) {
             return new APIResponse(
@@ -33,14 +39,22 @@ public class AuthController {
         if (response.getToken() == null) {
             return new APIResponse(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Token generate failed"
+                    "token generate failed"
+            );
+        }
+
+        //initialize user basket
+        APIResponse basketServiceResponse = appUtil.sendRequest(Request.Post(BASKET_SERVICE_URL + "initializeLoggedInUserBasket"), response.getToken(), APIResponse.class);
+        if(basketServiceResponse.getHttpStatus() != HttpStatus.CREATED){
+            return new APIResponse(
+                    HttpStatus.CREATED,
+                    "user register success but initialize basket failed"
             );
         }
 
         return new APIResponse(
                 HttpStatus.CREATED,
-                "success",
-                response
+                "success"
         );
     }
 
@@ -54,7 +68,6 @@ public class AuthController {
             );
         }
 
-        response.setUserExists(true);
         return new APIResponse(
                 HttpStatus.OK,
                 "success",
