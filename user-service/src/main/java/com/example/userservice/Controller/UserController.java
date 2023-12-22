@@ -28,16 +28,10 @@ public class UserController {
     @Autowired
     private CommonService commonService;
 
-    @Procedure("this is to get the authenticated user, id will be taken automatically")
+    @Procedure("this is to get the authenticated user")
     @GetMapping("/getLoggedInUser")
     public APIResponse getLoggedInUser() {
         String authenticatedUserId = commonService.getLoggedInUserId();
-        if (authenticatedUserId == null) {
-            return new APIResponse(
-                    HttpStatus.NETWORK_AUTHENTICATION_REQUIRED,
-                    "authentication required"
-            );
-        }
 
         User user = userService.getUserById(UUID.fromString(authenticatedUserId));
 
@@ -49,15 +43,10 @@ public class UserController {
         );
     }
 
+    @Procedure("this is to update Authenticated user")
     @PutMapping("/updateLoggedInUser")
     public APIResponse updateLoggedInUser(@RequestBody UpdateUserDto updateUserDto) {
         String authenticatedUserId = commonService.getLoggedInUserId();
-        if (authenticatedUserId == null) {
-            return new APIResponse(
-                    HttpStatus.NETWORK_AUTHENTICATION_REQUIRED,
-                    "authentication required"
-            );
-        }
 
         User user = userService.getUserById(UUID.fromString(authenticatedUserId));
         User updatedUser = userService.updateUserFields(user, updateUserDto);
@@ -69,14 +58,16 @@ public class UserController {
         );
     }
 
+    @Procedure("this is to get all the users")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getUsers")
     public APIResponse getUsers() {
         List<User> userList = userService.getUsers();
         if (userList.isEmpty()) {
             return new APIResponse(
-                    HttpStatus.NOT_FOUND,
-                    "no user found"
+                    HttpStatus.OK,
+                    "success",
+                    userList
             );
         }
 
@@ -88,14 +79,14 @@ public class UserController {
         );
     }
 
+    @Procedure("this is to get the user with given id")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getUserById/{id}")
     public APIResponse getUserById(@PathVariable UUID id) {
-
         if (id == null) {
             return new APIResponse(
                     HttpStatus.BAD_REQUEST,
-                    "given id is not legit"
+                    "user id can not be null"
             );
         }
 
@@ -115,13 +106,14 @@ public class UserController {
         );
     }
 
+    @Procedure("this is to get the user with given email")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getUserByEmail/{email}")
     public APIResponse getUserByEmail(@PathVariable String email) {
         if (email == null) {
             return new APIResponse(
                     HttpStatus.BAD_REQUEST,
-                    "given email is not legit"
+                    "email can not be null"
             );
         }
 
@@ -141,13 +133,14 @@ public class UserController {
         );
     }
 
+    @Procedure("this is to update user")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updateUser")
     public APIResponse updateUser(@RequestBody UpdateUserDto updateUserDto) {
         if (updateUserDto.getId() == null) {
             return new APIResponse(
                     HttpStatus.BAD_REQUEST,
-                    "given user is not legit"
+                    "user id can not be null"
             );
         }
 
