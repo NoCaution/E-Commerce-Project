@@ -1,7 +1,7 @@
 package com.example.productservice.Entity.Dto;
 
-import com.example.productservice.Entity.Enum.Category;
-import com.example.productservice.Entity.Enum.SubCategory;
+import com.example.commonservice.Entity.Enum.Category;
+import com.example.commonservice.Entity.Enum.SubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

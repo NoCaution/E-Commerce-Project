@@ -4,6 +4,7 @@ import com.example.commonservice.Service.CommonService;
 import com.example.commonservice.Util.AppUtil;
 import com.example.commonservice.Util.CustomMapper;
 import com.example.commonservice.Util.JWTUtil;
+import com.example.commonservice.Util.JwtToken;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,5 +35,10 @@ public class CommonServiceConfig {
     @Bean
     public AppUtil appUtil() {
         return new AppUtil();
+    }
+
+    @Bean
+    public JwtToken jwtToken(){
+        return new JwtToken();
     }
 }

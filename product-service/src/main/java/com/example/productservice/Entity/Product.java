@@ -1,11 +1,13 @@
 package com.example.productservice.Entity;
 
-import com.example.productservice.Entity.Enum.Category;
-import com.example.productservice.Entity.Enum.SubCategory;
+import com.example.commonservice.Entity.Enum.Category;
+import com.example.commonservice.Entity.Enum.SubCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
 import java.util.UUID;
@@ -37,8 +39,10 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private SubCategory subCategory;
 
+    @CreatedDate
     private Date createdAt;
 
+    @LastModifiedDate
     private Date updatedAt;
 
 }

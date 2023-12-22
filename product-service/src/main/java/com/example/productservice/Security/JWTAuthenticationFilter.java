@@ -2,12 +2,14 @@ package com.example.productservice.Security;
 
 import com.example.commonservice.Service.CommonService;
 import com.example.commonservice.Util.JWTUtil;
+import com.example.commonservice.Util.JwtToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -19,11 +21,17 @@ import java.io.IOException;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
+    @Value("${application.security.jwt.secret-key}")
+    private String SECRET_KEY;
+
     @Autowired
     private JWTUtil jwtUtil;
 
     @Autowired
     private CommonService commonService;
+
+    @Autowired
+    private JwtToken jwtToken;
 
 
     @Override
@@ -51,6 +59,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                jwtToken.setToken(SECRET_KEY,token);
             }
         }
         filterChain.doFilter(request, response);

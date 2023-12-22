@@ -1,7 +1,7 @@
 package com.example.productservice.Repository;
 
-import com.example.productservice.Entity.Enum.Category;
-import com.example.productservice.Entity.Enum.SubCategory;
+import com.example.commonservice.Entity.Enum.Category;
+import com.example.commonservice.Entity.Enum.SubCategory;
 import com.example.productservice.Entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

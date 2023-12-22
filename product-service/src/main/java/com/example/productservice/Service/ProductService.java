@@ -1,15 +1,14 @@
 package com.example.productservice.Service;
 
+import com.example.commonservice.Entity.Enum.Category;
 import com.example.productservice.Entity.Dto.CategoryDto;
 import com.example.productservice.Entity.Dto.UpdateProductDto;
-import com.example.productservice.Entity.Enum.Category;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +27,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> getProducts(List<UUID> productIdList){
+        return productRepository.findAllById(productIdList);
+    }
+
     public List<Product> getProductsByCategory(Category category) {
         return productRepository.findProductsByCategory(category);
     }
@@ -40,9 +43,15 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void updateProducts(List<Product> productList){
+        productRepository.saveAll(productList);
+    }
+
     public void deleteProduct(UUID id) {
         productRepository.deleteById(id);
     }
+
+
 
     public Product updateProductFieldsWithNullSafety(Product product, UpdateProductDto updateProductDto) throws IOException {
         product.setProductName(updateProductDto.getProductName() == null ? product.getProductName() : updateProductDto.getProductName());
@@ -51,7 +60,6 @@ public class ProductService {
         product.setStock(updateProductDto.getStock() == null ? product.getStock() : updateProductDto.getStock());
         product.setCategory(updateProductDto.getCategory() == null ? product.getCategory() : updateProductDto.getCategory());
         product.setSubCategory(updateProductDto.getSubCategory() == null ? product.getSubCategory() : updateProductDto.getSubCategory());
-        product.setUpdatedAt(new Date());
         return product;
     }
 }
