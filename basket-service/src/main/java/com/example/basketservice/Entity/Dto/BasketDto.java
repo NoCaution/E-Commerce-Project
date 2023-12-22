@@ -17,7 +17,7 @@ public class BasketDto {
 
     private UUID userId;
 
-    private Map<UUID,Integer> itemList;
+    private Map<UUID,Integer> productList;
 
     private Date createdAt;
 

@@ -18,15 +18,18 @@ import java.util.UUID;
 @Table(name = "baskets")
 public class Basket {
 
+    @Column(nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     private UUID userId;
 
+    @Column(name = "productList")
     @ElementCollection
     private Map<UUID,Integer> productList;
 
+    @Column(nullable = false)
     @CreatedDate
     private Date createdAt;
 
