@@ -21,10 +21,24 @@ public class AppUtil {
             String header = "Bearer " + token;
             String json = request.setHeader("Authorization", header).execute().returnContent().asString();
             APIResponse apiResponse = gson.fromJson(json, APIResponse.class);
-            if(apiResponse.getResult() == null){
-                return customMapper.map(apiResponse,targetClass);
+
+            if (apiResponse.getResult() == null) {
+                return null;
             }
+
             return customMapper.map(apiResponse.getResult(), targetClass);
+
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public APIResponse sendRequest(Request request, String token) {
+        try {
+            String header = "Bearer " + token;
+            String json = request.setHeader("Authorization", header).execute().returnContent().asString();
+            return gson.fromJson(json, APIResponse.class);
+
         } catch (IOException e) {
             return null;
         }
