@@ -14,11 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Set;
 
 @Service
-public class AuthService{
+public class AuthService {
     @Autowired
     private CustomMapper customMapper;
 
@@ -47,7 +46,6 @@ public class AuthService{
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
 
         User user = customMapper.map(requestDto, User.class);
-        user.setCreatedAt(new Date());
         authRepository.save(user);
 
         UserDetailsDto userDetailsDto = customMapper.map(getUserByEmail(requestDto.getEmail()), UserDetailsDto.class);
@@ -73,8 +71,9 @@ public class AuthService{
         }
 
         User user = getUserByEmail(requestDto.getEmail());
+
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            // user esixts but token will be null
+            // user exists but password incorrect and token will be null
             return new AuthenticationResponseDto();
         }
 
@@ -86,7 +85,9 @@ public class AuthService{
 
         String token = jwtUtil.generateJwtToken(userDetails);
         return new AuthenticationResponseDto(
-                token
+                token,
+                true,
+                false
         );
     }
 

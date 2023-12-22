@@ -8,6 +8,7 @@ import com.example.commonservice.Entity.APIResponse;
 import com.example.commonservice.Util.AppUtil;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class AuthController {
     private AppUtil appUtil;
 
 
+    @Procedure("this is to register a user")
     @PostMapping("/register")
     public APIResponse register(@RequestBody RegistirationRequestDto request) {
         String BASKET_SERVICE_URL = "http://localhost:9000/api/basket/";
@@ -45,7 +47,7 @@ public class AuthController {
 
         //initialize user basket
         APIResponse basketServiceResponse = appUtil.sendRequest(Request.Post(BASKET_SERVICE_URL + "initializeLoggedInUserBasket"), response.getToken(), APIResponse.class);
-        if(basketServiceResponse.getHttpStatus() != HttpStatus.CREATED){
+        if (basketServiceResponse.getHttpStatus() != HttpStatus.CREATED) {
             return new APIResponse(
                     HttpStatus.CREATED,
                     "user register success but initialize basket failed"
@@ -58,13 +60,21 @@ public class AuthController {
         );
     }
 
+    @Procedure("this is to login")
     @PostMapping("/login")
     public APIResponse login(@RequestBody AuthenticationRequestDto request) {
         AuthenticationResponseDto response = authService.login(request);
-        if (response.getToken() == null) {
+        if (!response.isUserExists()) {
             return new APIResponse(
                     HttpStatus.UNAUTHORIZED,
-                    "login failed"
+                    "email incorrect"
+            );
+        }
+
+        if (response.isEmailPasswordIncorrect()) {
+            return new APIResponse(
+                    HttpStatus.UNAUTHORIZED,
+                    "email or password incorrect"
             );
         }
 
