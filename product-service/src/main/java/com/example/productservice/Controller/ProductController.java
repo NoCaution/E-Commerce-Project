@@ -263,10 +263,10 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/updateProduct")
     public APIResponse updateProduct(@RequestBody UpdateProductDto updateProductDto) {
-        if (updateProductDto == null) {
+        if (updateProductDto.getId() == null) {
             return new APIResponse(
                     HttpStatus.BAD_REQUEST,
-                    "given product is not legit"
+                    "product id can not be null"
             );
         }
 
