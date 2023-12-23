@@ -106,7 +106,7 @@ public class BasketController {
         );
     }
 
-    @Procedure("this is to add a product to basket of authenticated user")
+    @Procedure("this is to add a product to authenticated user's basket")
     @PutMapping("/addProductToLoggedInUserBasket")
     public APIResponse addProductToLoggedInUserBasket(@RequestBody AddOrDeleteProductDto addProductDto) {
         String loggedInUserId = commonService.getLoggedInUserId();
@@ -162,6 +162,7 @@ public class BasketController {
         );
     }
 
+    @Procedure("this is to delete a product from authenticated user's basket")
     @PutMapping("/deleteProductFromLoggedInUserBasket")
     public APIResponse deleteProductFromLoggedInUserBasket(@RequestBody AddOrDeleteProductDto deleteProductDto) {
         UUID loggedInUserId = UUID.fromString(commonService.getLoggedInUserId());
@@ -326,6 +327,7 @@ public class BasketController {
         );
     }
 
+    @Procedure("this is to add a product to basket")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/addProductToBasket")
     public APIResponse addProductToBasket(@RequestBody AddOrDeleteProductDto addProductDto) {
@@ -376,6 +378,7 @@ public class BasketController {
         );
     }
 
+    @Procedure("this is to delete a product from basket")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/deleteProductFromBasket")
     public APIResponse deleteProductFromBasket(@RequestBody AddOrDeleteProductDto deleteProductDto) {
