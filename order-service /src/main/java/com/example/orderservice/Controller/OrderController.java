@@ -160,7 +160,7 @@ public class OrderController {
                 continue;
             }
 
-            totalPrice += productDto.getPrice();
+            totalPrice += productDto.getPrice() * quantity.longValue();
 
         }
 
