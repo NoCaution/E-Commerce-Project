@@ -93,7 +93,7 @@ public class OrderController {
                 URIBuilder uriBuilder = new URIBuilder(productServiceUri + "getProducts");
 
                 for (UUID productId : productIdList) {
-                    uriBuilder.addParameter("param", productId.toString());
+                    uriBuilder.addParameter("id", String.valueOf(productId));
                 }
 
                 uri = uriBuilder.build();
