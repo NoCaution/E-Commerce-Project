@@ -5,6 +5,7 @@ import com.example.commonservice.Entity.Enum.Role;
 import com.example.commonservice.Util.AppUtil;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,6 +51,7 @@ public class CommonService implements UserDetailsService {
         return null;
     }
 
+    @Cacheable(value="user-cache",key="#result.username")
     @Override
     public org.springframework.security.core.userdetails.User loadUserByUsername(String token) throws UsernameNotFoundException {
         UserDetailsDto userDetailsDto = appUtil.sendRequest(Request.Get(USER_SERVICE_URL + "getLoggedInUser"), token, UserDetailsDto.class);
