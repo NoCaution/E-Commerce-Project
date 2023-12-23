@@ -80,7 +80,7 @@ public class ProductController {
 
     @Procedure("this is to get products with given id list. If you want to get all the products, dont give anything")
     @GetMapping("/getProducts")
-    public APIResponse getProducts(@Nullable @RequestParam List<UUID> productIdList) {
+    public APIResponse getProducts(@Nullable @RequestParam("id") List<UUID> productIdList) {
         List<Product> productList;
 
         if (productIdList == null) {
