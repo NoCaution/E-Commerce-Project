@@ -4,6 +4,7 @@ import com.example.userservice.Entity.Dto.UpdateUserDto;
 import com.example.userservice.Entity.User;
 import com.example.userservice.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,10 +37,11 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Cacheable(value="user-cache",key="#id")
     @Override
     public org.springframework.security.core.userdetails.User loadUserByUsername(String id) throws UsernameNotFoundException {
         UUID userId = UUID.fromString(id);
-        User user = getUserById(userId);
+        User user = userRepository.findById(userId).orElse(new User());
         return new org.springframework.security.core.userdetails.User(
                 id,
                 user.getPassword(),
