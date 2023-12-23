@@ -1,27 +1,20 @@
 package com.example.orderservice.Entity;
 
+import com.example.commonservice.Entity.BaseModel;
 import com.example.commonservice.Entity.Enum.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.*;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "orders")
-public class Order {
-    @Column(nullable = false)
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+public class Order extends BaseModel {
 
     @Column(name = "productList")
     @ElementCollection
@@ -34,12 +27,5 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.NEW_ORDER;
-
-    @Column(nullable = false)
-    @CreatedDate
-    private Date createdAt;
-
-    @LastModifiedDate
-    private Date updatedAt;
 
 }

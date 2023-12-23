@@ -1,43 +1,29 @@
 package com.example.authservice.Entity;
 
 import com.example.authservice.Entity.Enum.Role;
+import com.example.commonservice.Entity.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
-@Data
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
-
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Id
-    private UUID id;
+public class User extends BaseModel implements UserDetails {
 
     private String fullName;
     private String email;
     private String password;
     private String phoneNumber;
-
-    @Column(nullable = false)
-    @CreatedDate
-    private Date createdAt;
-
-    @LastModifiedDate
-    private Date updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -50,6 +36,7 @@ public class User implements UserDetails {
         this.role = role;
         this.createdAt = createdAT;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
