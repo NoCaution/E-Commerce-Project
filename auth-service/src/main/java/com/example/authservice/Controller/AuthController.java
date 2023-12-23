@@ -46,7 +46,7 @@ public class AuthController {
         }
 
         //initialize user basket
-        APIResponse basketServiceResponse = appUtil.sendRequest(Request.Post(BASKET_SERVICE_URL + "initializeLoggedInUserBasket"), response.getToken(), APIResponse.class);
+        APIResponse basketServiceResponse = appUtil.sendRequest(Request.Post(BASKET_SERVICE_URL + "initializeLoggedInUserBasket"), response.getToken());
         if (basketServiceResponse.getHttpStatus() != HttpStatus.CREATED) {
             return new APIResponse(
                     HttpStatus.CREATED,
@@ -56,7 +56,8 @@ public class AuthController {
 
         return new APIResponse(
                 HttpStatus.CREATED,
-                "success"
+                "success",
+                response
         );
     }
 
