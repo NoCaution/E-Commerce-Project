@@ -15,6 +15,11 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
 eureka:
   client:
     instance-info-replication-interval-seconds: 5

@@ -34,6 +34,12 @@ spring:
           uri: lb://order-service
           predicates:
             - Path=/api/order/**
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
 eureka:
   client:
     instance-info-replication-interval-seconds: 5
@@ -42,3 +48,4 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     hostname: localhost
+
