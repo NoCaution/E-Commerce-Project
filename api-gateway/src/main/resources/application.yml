@@ -6,34 +6,23 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      #      default-filters:
-      #        - name: SessionFilter
-      #        - name: ThrottlingFilter
       discovery:
         locator:
           lower-case-service-id: true
           enabled: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/user/**
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/api/auth/**
-        - id: basket-service
-          uri: lb://basket-service
-          predicates:
-            - Path=/api/basket/**
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/api/product/**
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/order/**
+      default-filters:
+        - name: CustomGateWayFilter
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    configUrl: ${server.servlet.contextPath}/v3/api-docs/swagger-config
+    url: ${server.servlet.contextPath}/v3/api-docs
+    urls:
+      - name: api-auth
+        url: /auth/v3/api-docs
+
 
 management:
   tracing:
@@ -49,3 +38,7 @@ eureka:
   instance:
     hostname: localhost
 
+application:
+  security:
+    jwt:
+      secret-key: 8f3ca84c5122366a19f7804e71c432fc639c7817903321a43879fe8c436c2311
