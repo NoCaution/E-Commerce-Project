@@ -1,7 +1,6 @@
 package com.example.commonservice.Util;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

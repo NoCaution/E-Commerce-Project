@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +19,13 @@ import java.util.function.Function;
 public class JWTUtil {
 
     private final String SECRET_KEY = "8f3ca84c5122366a19f7804e71c432fc639c7817903321a43879fe8c436c2311";
+
+    private final Logger logger = LoggerFactory.getLogger(JWTUtil.class);
+
     private static final long expirationTimeMillisConst = 100000 * 60 * 24;
 
     public String extractUserId(String token){
+        logger.info("getting user id");
         return extractClaim(token, Claims ::getSubject);
     }
 
@@ -31,6 +37,7 @@ public class JWTUtil {
     public String generateJwtToken(
             UserDetails user
     ){
+        logger.info("generating token");
         return Jwts
                 .builder()
                 .setHeaderParam("type","JWT")
@@ -43,7 +50,9 @@ public class JWTUtil {
 
     public boolean isTokenValid(String token, UserDetails user){
         final String id = extractUserId(token);
-        return Objects.equals(id, user.getUsername()) && !isTokenExpired(token);
+        boolean isTokenValid = Objects.equals(id, user.getUsername()) && !isTokenExpired(token);
+        logger.info("token valid: {}", isTokenValid);
+        return isTokenValid;
     }
 
     private boolean isTokenExpired(String token){
