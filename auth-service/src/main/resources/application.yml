@@ -13,6 +13,8 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+server:
+  port: 0
 
 management:
   tracing:
@@ -28,6 +30,5 @@ eureka:
   instance:
     hostname: localhost
 
-server:
-  port: 0
+
 
