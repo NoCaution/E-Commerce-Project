@@ -32,7 +32,8 @@ public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGate
             "/swagger-ui/**",
             "/v2/api-docs/**",
             "/swagger-resources/**",
-            "/auth-service/api/auth/login"
+            "/auth-service/api/auth/login",
+            "/auth-service/api/auth/register"
     );
 
     public CustomGateWayFilter() {
