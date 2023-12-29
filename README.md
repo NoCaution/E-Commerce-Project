@@ -1,6 +1,6 @@
 # E-Commerce Web Api 
 - E-Commerce Project is a basic api with microservice architecture for web applications in E-Commerce category.
-- Common technologies used in project: ```Spring Boot``` , ```Spring Security```, ```Eureka```, ```Spring Cloud Gateway```, ```Spring Data Jpa```, ```Open Api```, ```Zipkin```, ```Hazelcast```, ``````Lombok```, ```Json Web Token```
+- Common technologies used in project: ```Spring Boot``` , ```Spring Security```, ```Eureka```, ```Spring Cloud Gateway```, ```Spring Data Jpa```, ```Open Api```, ```Zipkin```, ```Hazelcast```, ```Lombok```, ```Json Web Token```
 - Project uses JWT-Token based authentication and Spring Security for authorization
 ## Contents
 - Services
