@@ -1,7 +1,11 @@
 server:
   port: 9000
+  servlet:
+    context-path: /
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: api-gateway
   cloud:
@@ -17,12 +21,23 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-    configUrl: ${server.servlet.contextPath}/v3/api-docs/swagger-config
-    url: ${server.servlet.contextPath}/v3/api-docs
+    enabled: true
+    disable-swagger-default-url: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
     urls:
+      - name: api-gateway
+        url: /v3/api/docs
       - name: api-auth
-        url: /auth/v3/api-docs
-
+        url: /auth-service/v3/api-docs
+      - name: api-user
+        url: /user-service/v3/api-docs
+      - name: api-product
+        url: /product-service/v3/api-docs
+      - name: api-basket
+        url: /basket-service/v3/api-docs
+      - name: api-order
+        url: /order-service/v3/api-docs
 
 management:
   tracing:

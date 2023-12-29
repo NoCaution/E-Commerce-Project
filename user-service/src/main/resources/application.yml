@@ -20,6 +20,18 @@ management:
     sampling:
       probability: 1.0
 
+openapi:
+  service:
+    title: user-service doc
+    version: 1.0.0
+    url: http://localhost:9000/user-service
+
+springdoc:
+  api-docs:
+    path: /user-service/v3/api-docs
+  swagger-ui:
+    path: /user-service/swagger-ui.html
+
 eureka:
   client:
     instance-info-replication-interval-seconds: 5
@@ -31,3 +43,5 @@ eureka:
 
 server:
   port: 0
+  servlet:
+    context-path: /

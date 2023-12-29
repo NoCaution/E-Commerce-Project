@@ -55,12 +55,19 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
+    private static final String[] WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/order-service/v3/api/docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth -> auth.anyRequest().authenticated()
+                        auth -> auth.requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement(HttpSecurity -> HttpSecurity.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider())

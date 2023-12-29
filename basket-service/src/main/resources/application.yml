@@ -20,6 +20,18 @@ management:
     sampling:
       probability: 1.0
 
+openapi:
+  service:
+    title: basket-service doc
+    version: 1.0.0
+    url: http://localhost:9000/basket-service
+
+springdoc:
+  api-docs:
+    path: /basket-service/v3/api-docs
+  swagger-ui:
+    path: /basket-service/swagger-ui.html
+
 eureka:
   client:
     instance-info-replication-interval-seconds: 5
@@ -34,3 +46,5 @@ application:
 
 server:
   port: 0
+  servlet:
+    context-path: /

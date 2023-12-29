@@ -11,11 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 @Component
 public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGateWayFilter.Config> {
@@ -27,30 +27,36 @@ public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGate
     @Autowired
     private UserService userService;
 
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     private static final List<String> WHITE_LIST = List.of(
-            "/v3/api-docs/**",
+            "/auth-service/v3/api-docs/**",
+            "/product-service/v3/api/docs/**",
+            "/user-service/v3/api/docs/**",
+            "/basket-service/v3/api/docs/**",
+            "/order-service/v3/api/docs/**",
             "/swagger-ui/**",
-            "/v2/api-docs/**",
             "/swagger-resources/**",
-            "/auth-service/api/auth/login",
-            "/auth-service/api/auth/register"
+            "/auth-service/api/auth/**"
     );
 
     public CustomGateWayFilter() {
         super(Config.class);
     }
 
-    public Predicate<ServerHttpRequest> isInWhiteList = serverHttpRequest -> WHITE_LIST
-            .stream()
-            .anyMatch(uri -> serverHttpRequest.getURI().getPath().contains(uri));
+    private boolean isInWhiteList(String requestPath) {
+        return WHITE_LIST.stream()
+                .anyMatch(path -> pathMatcher.match(path,requestPath));
+    }
 
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
+            String requestPath = exchange.getRequest().getURI().getPath();
 
             //is uri in WHITE_LIST
-            if (isInWhiteList.test(exchange.getRequest())) {
+            if (isInWhiteList(requestPath)) {
                 return chain.filter(exchange);
             }
 
@@ -96,7 +102,7 @@ public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGate
                         request = exchange.getRequest().mutate().header("CustomAuthorization", headerValue).build();
                     }
 
-                    //for request to /api/user/getLoggedInUser , token is enough to send
+                    //for request to /user-service/api/user/getLoggedInUser , token is enough to send
                 } else {
                     headerValue = token;
                     request = exchange.getRequest().mutate().header("CustomAuthorization", headerValue).build();

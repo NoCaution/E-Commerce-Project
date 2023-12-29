@@ -13,8 +13,25 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+openapi:
+  service:
+    title: auth-service documentation
+    version: 1.0.0
+    url: http://localhost:9000/auth-service
+
+springdoc:
+  api-docs:
+    path: /auth-service/v3/api-docs
+  swagger-ui:
+    path: /auth-service/swagger-ui.html
+
+
 server:
   port: 0
+  servlet:
+    context-path: /
+
 
 management:
   tracing:
