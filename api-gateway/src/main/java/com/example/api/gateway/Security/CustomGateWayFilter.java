@@ -1,5 +1,6 @@
 package com.example.api.gateway.Security;
 
+import com.example.api.gateway.Entity.UserDetailsDto;
 import com.example.api.gateway.service.UserService;
 import com.example.api.gateway.util.JWTUtil;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -16,6 +18,7 @@ import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Component
 public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGateWayFilter.Config> {
@@ -89,13 +92,19 @@ public class CustomGateWayFilter extends AbstractGatewayFilterFactory<CustomGate
 
                 boolean isNotGetLoggedInUserRequest = !Objects.equals(exchange.getRequest().getURI().getPath(), "/user-service/api/user/getLoggedInUser");
                 if (isNotGetLoggedInUserRequest) {
-                    User user = userService.getUser(token);
+                    UserDetailsDto user = userService.sendRequest(token);
 
-                    boolean isTokenValid = jwtUtil.isTokenValid(token, user);
+                    User userDetails = new User(
+                            user.getId().toString(),
+                            user.getPassword(),
+                            Set.of(new SimpleGrantedAuthority(user.getRole().toString()))
+                    );
+
+                    boolean isTokenValid = jwtUtil.isTokenValid(token, userDetails);
                     if (isTokenValid) {
-                        String userName = user.getUsername();
+                        String userName = userDetails.getUsername();
                         String password = user.getPassword();
-                        String role = user.getAuthorities().stream().toList().get(0).getAuthority();
+                        String role = userDetails.getAuthorities().stream().toList().get(0).getAuthority();
 
                         //add user credentials to header
                         headerValue = String.join(" ", token, userName, password, role);

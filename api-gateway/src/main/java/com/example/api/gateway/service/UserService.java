@@ -9,12 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Component
 public class UserService {
@@ -27,18 +24,8 @@ public class UserService {
 
 
     @Cacheable(value = "user-cache", key = "#token")
-    public org.springframework.security.core.userdetails.User getUser(String token) throws UsernameNotFoundException {
-        logger.info("getting user");
-        UserDetailsDto userDetailsDto = sendRequest(Request.Get(USER_SERVICE_URL), token);
-
-        return new org.springframework.security.core.userdetails.User(
-                userDetailsDto.getId().toString(),
-                userDetailsDto.getPassword(),
-                Set.of(new SimpleGrantedAuthority(userDetailsDto.getRole().toString()))
-        );
-    }
-
-    public UserDetailsDto sendRequest(Request request, String token) {
+    public UserDetailsDto sendRequest(String token) {
+        Request request = Request.Get(USER_SERVICE_URL);
         logger.info("sending request: {}", request);
         try {
             Gson gson = new Gson();
@@ -49,6 +36,7 @@ public class UserService {
 
             logger.info("request success");
             return customMapper.map(apiResponse.getResult(), UserDetailsDto.class);
+
 
         } catch (IOException e) {
             logger.error("error while sending request: {}", e.getMessage(), e);
